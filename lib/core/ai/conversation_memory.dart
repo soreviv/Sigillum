@@ -24,12 +24,13 @@ final class ConversationMemory {
   bool get isEmpty => _messages.isEmpty;
 
   void addUser(String content) {
-    _trim();
     _messages.add(ChatMessage(role: 'user', content: content));
+    _trim();
   }
 
   void addAssistant(String content) {
     _messages.add(ChatMessage(role: 'assistant', content: content));
+    _trim();
   }
 
   /// Reemplaza el último mensaje del asistente (para actualizar un stream en curso).
@@ -51,8 +52,7 @@ final class ConversationMemory {
       _messages.map((m) => m.toApiMap()).toList();
 
   void _trim() {
-    // Mantiene solo los últimos _maxTurns pares (user + assistant)
-    while (_messages.length >= _maxTurns * 2) {
+    while (_messages.length > _maxTurns * 2) {
       _messages.removeAt(0);
     }
   }
