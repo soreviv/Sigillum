@@ -89,8 +89,8 @@ Autor: Alejandro Viveros Domínguez
 | Fase | Semanas | Descripción | Estado |
 |------|---------|-------------|--------|
 | **Fase 1** | 1–2 | Entorno de Privacidad — bloqueos a nivel de SO | ✅ Completada |
-| **Fase 2** | 3–6 | Motor de IA + RAG stateless en RAM | ⏳ Pendiente |
-| **Fase 3** | 7–9 | UI/UX: Chat · Destilación · QPL · Modo Iglesia · Botón de Pánico | ⏳ Pendiente |
+| **Fase 2** | 3–6 | Motor de IA + RAG stateless en RAM | ✅ Completada |
+| **Fase 3** | 7–9 | UI/UX: Chat · Destilación · QPL · Modo Iglesia · Botón de Pánico | ✅ Completada |
 | **Fase 4** | 10–12 | Auditoría forense de memoria + pruebas de campo | ⏳ Pendiente |
 
 ---
