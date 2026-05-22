@@ -2,6 +2,8 @@
     <!-- Biometric authentication -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
     <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+    <!-- Claude API (ZDR) — solo durante inferencia, sin datos persistentes -->
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:label="sigillum"

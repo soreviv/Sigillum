@@ -1,0 +1,86 @@
+[
+  {
+    "id": "cec1422",
+    "reference": "CEC 1422",
+    "category": "sacramento_penitencia",
+    "keywords": ["sacramento", "penitencia", "reconciliación", "bautismo", "pecados", "conversión"],
+    "text": "El sacramento de la Penitencia y de la Reconciliación concede al pecador el amor misericordioso de Dios que perdona y al mismo tiempo el reconciliarse con la Iglesia a la que pecando hirió, y que colabora a su conversión con su caridad, su ejemplo y sus oraciones."
+  },
+  {
+    "id": "cec1450",
+    "reference": "CEC 1450",
+    "category": "actos_penitente",
+    "keywords": ["contrición", "confesión", "satisfacción", "actos", "penitente", "partes"],
+    "text": "La penitencia requiere del pecador la voluntad de cambiar de vida y de reparar los daños causados por el pecado, así como la determinación de no pecar más. Sus actos son: la contrición, la confesión de los pecados y la satisfacción o penitencia."
+  },
+  {
+    "id": "cec1451",
+    "reference": "CEC 1451",
+    "category": "contricion",
+    "keywords": ["contrición", "dolor", "detestación", "pecado", "propósito", "no volver", "arrepentimiento"],
+    "text": "Entre los actos del penitente, la contrición ocupa el primer lugar. Es el dolor del alma y detestación del pecado cometido con la resolución de no volver a pecar."
+  },
+  {
+    "id": "cec1454",
+    "reference": "CEC 1454",
+    "category": "examen_conciencia",
+    "keywords": ["examen", "conciencia", "preparación", "confesión", "pecados", "reflexión", "introspección"],
+    "text": "El examen de conciencia, a la luz de la Palabra de Dios, es condición previa para la recepción del sacramento de la Penitencia. El penitente debe revisar su vida cotidiana a la luz de los mandamientos, las bienaventuranzas y las virtudes teologales."
+  },
+  {
+    "id": "cec1456",
+    "reference": "CEC 1456",
+    "category": "confesion_pecados",
+    "keywords": ["confesar", "pecados", "graves", "especie", "número", "circunstancias", "nombre"],
+    "text": "La confesión de los pecados, incluso desde el punto de vista meramente humano, nos libera y facilita nuestra reconciliación con los demás. Por la confesión, el hombre mira de frente los pecados de que se ha hecho culpable; asume su responsabilidad y, por ello, se abre de nuevo a Dios y a la comunión de la Iglesia con el fin de hacer posible un nuevo futuro."
+  },
+  {
+    "id": "cec1854",
+    "reference": "CEC 1854",
+    "category": "tipos_pecado",
+    "keywords": ["pecado", "mortal", "venial", "gravedad", "especie", "materia", "conciencia"],
+    "text": "Los pecados son evaluables según su gravedad. La distinción entre pecado mortal y pecado venial, perceptible ya en la Escritura (cf. 1 Jn 5, 16-17), se ha impuesto en la tradición de la Iglesia."
+  },
+  {
+    "id": "cec1855",
+    "reference": "CEC 1855",
+    "category": "pecado_mortal",
+    "keywords": ["pecado", "mortal", "materia", "grave", "consentimiento", "pleno", "advertencia"],
+    "text": "El pecado mortal destruye la caridad en el corazón del hombre por una infracción grave de la ley de Dios; aparta al hombre de Dios, que es su fin último y su bienaventuranza, prefiriendo un bien inferior. Para que un pecado sea mortal se requieren tres condiciones: objeto grave, pleno conocimiento y consentimiento deliberado."
+  },
+  {
+    "id": "cec1857",
+    "reference": "CEC 1857",
+    "category": "condiciones_pecado_mortal",
+    "keywords": ["mortal", "materia", "grave", "mandamiento", "plena", "advertencia", "deliberado", "consentimiento"],
+    "text": "Para que un pecado sea mortal son necesarias simultáneamente tres condiciones: materia grave, plena advertencia, y pleno consentimiento de la voluntad. El pecado mortal requiere plena conciencia y entero consentimiento; supone conocimiento del carácter pecaminoso del acto, de su oposición a la Ley de Dios."
+  },
+  {
+    "id": "cec1862",
+    "reference": "CEC 1862",
+    "category": "pecado_venial",
+    "keywords": ["pecado", "venial", "leve", "materia", "levedad", "descuido", "imperfecto"],
+    "text": "Se comete pecado venial cuando se falta en materia leve, o bien, en materia grave, sin plena advertencia o sin entero consentimiento. El pecado venial debilita la caridad; entraña un afecto desordenado a bienes creados; impide el progreso del alma en el ejercicio de las virtudes y la práctica del bien moral."
+  },
+  {
+    "id": "cec1866",
+    "reference": "CEC 1866",
+    "category": "pecados_capitales",
+    "keywords": ["pecados", "capitales", "soberbia", "avaricia", "envidia", "ira", "lujuria", "gula", "pereza", "vicios"],
+    "text": "Los vicios pueden catalogarse según las virtudes que contradicen, o también referirlos a los pecados capitales que la experiencia cristiana ha distinguido, a partir de Casiano y san Gregorio Magno. Se llaman capitales porque generan otros pecados, otros vicios. Son: soberbia, avaricia, envidia, ira, lujuria, gula, pereza o acedia."
+  },
+  {
+    "id": "cec1776",
+    "reference": "CEC 1776",
+    "category": "conciencia_moral",
+    "keywords": ["conciencia", "moral", "ley", "bien", "mal", "interior", "voz", "corazón"],
+    "text": "En lo más profundo de su conciencia descubre el hombre la existencia de una ley que él no se da a sí mismo, sino a la que debe obedecer, y cuya voz resuena en su interior llamándole al amor del bien y de la justicia y apartarle del mal."
+  },
+  {
+    "id": "cec1778",
+    "reference": "CEC 1778",
+    "category": "conciencia_recta",
+    "keywords": ["conciencia", "recta", "formación", "juicio", "moral", "prudencia", "discernimiento"],
+    "text": "La conciencia recta y veraz es condición para asumir la responsabilidad personal de los propios actos. La conciencia moral, presente en el corazón de la persona, le ordena, en el momento oportuno, practicar el bien y evitar el mal."
+  }
+]

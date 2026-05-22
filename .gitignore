@@ -1,3 +1,7 @@
+# Secrets — nunca subir al repositorio
+.env
+*.env
+
 # Miscellaneous
 *.class
 *.log

@@ -1,0 +1,65 @@
+[
+  {
+    "id": "c959",
+    "reference": "Canon 959",
+    "category": "sacramento",
+    "keywords": ["sacramento", "penitencia", "confesión", "perdón", "pecados", "ministro", "sacerdote", "bautismo", "reconciliación"],
+    "text": "En el sacramento de la penitencia, los fieles que confiesan sus pecados a un ministro legítimo, con dolor de ellos y con propósito de enmienda, obtienen de Dios el perdón de los pecados cometidos después del bautismo, y al mismo tiempo se reconcilian con la Iglesia, a la que hirieron al pecar."
+  },
+  {
+    "id": "c978",
+    "reference": "Canon 978 §1",
+    "category": "comportamiento_confesor",
+    "keywords": ["confesor", "juez", "médico", "penitente", "pastor", "discreción"],
+    "text": "El confesor, al oír las confesiones, recuerde que hace las veces de juez y de médico, y que ha sido constituido por Dios ministro de la justicia y a la vez de la misericordia divinas, para proveer al honor de Dios y a la salvación de las almas."
+  },
+  {
+    "id": "c979",
+    "reference": "Canon 979",
+    "category": "comportamiento_confesor",
+    "keywords": ["confesor", "prudencia", "preguntas", "penitente", "cómplice", "edad", "condición"],
+    "text": "El confesor, al preguntar, proceda con prudencia y discreción, teniendo en cuenta la condición y edad del penitente, y se abstenga de preguntar el nombre del cómplice."
+  },
+  {
+    "id": "c983",
+    "reference": "Canon 983 §1",
+    "category": "secreto",
+    "keywords": ["sigilo", "secreto", "sacramental", "inviolable", "confesión", "penitente", "confidencial"],
+    "text": "El sigilo sacramental es inviolable; por lo cual está terminantemente prohibido al confesor descubrir al penitente, de palabra o de cualquier otro modo, y por ningún motivo."
+  },
+  {
+    "id": "c987",
+    "reference": "Canon 987",
+    "category": "disposicion_penitente",
+    "keywords": ["penitente", "disposición", "arrepentimiento", "conversión", "propósito", "enmienda", "pecados"],
+    "text": "Para recibir el remedio saludable del sacramento de la penitencia, el fiel ha de estar dispuesto de tal modo que, rechazando los pecados cometidos y con propósito de enmienda, se convierta a Dios."
+  },
+  {
+    "id": "c988p1",
+    "reference": "Canon 988 §1",
+    "category": "especie_numero",
+    "keywords": ["confesar", "especie", "número", "pecados", "graves", "mortales", "examen", "conciencia", "obligación"],
+    "text": "El fiel está obligado a confesar según su especie y número todos los pecados graves cometidos después del bautismo y aún no perdonados directamente por la potestad de las llaves de la Iglesia ni acusados en la confesión individual, de los cuales tenga conciencia después de un diligente examen de conciencia."
+  },
+  {
+    "id": "c988p2",
+    "reference": "Canon 988 §2",
+    "category": "especie_numero",
+    "keywords": ["veniales", "pecados leves", "recomienda", "acusar", "confesión"],
+    "text": "Se recomienda a los fieles que confiesen también los pecados veniales, aunque esto no sea estrictamente necesario."
+  },
+  {
+    "id": "c989",
+    "reference": "Canon 989",
+    "category": "obligacion_anual",
+    "keywords": ["obligación", "anual", "confesar", "graves", "año", "pascual"],
+    "text": "Todo fiel que haya llegado al uso de razón está obligado a confesar fielmente sus pecados graves al menos una vez al año."
+  },
+  {
+    "id": "c991",
+    "reference": "Canon 991",
+    "category": "libertad_confesor",
+    "keywords": ["confesor", "libre", "elegir", "penitente", "libertad"],
+    "text": "Todo fiel tiene derecho a confesar sus pecados al confesor legítimamente aprobado que prefiera, aunque sea de rito distinto."
+  }
+]
