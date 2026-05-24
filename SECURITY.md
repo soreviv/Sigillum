@@ -49,7 +49,7 @@ Ningún fragmento de texto atraviesa una capa de almacenamiento en ningún punto
 | Sin revisión ortográfica | `SpellCheckConfiguration.disabled()` |
 | Sin portapapeles retenido | `Clipboard.setData('')` al enviar cada mensaje |
 | Re-autenticación biométrica | `LocalAuthentication` + `WidgetsBindingObserver` |
-| Sin backup de datos | `android:allowBackup="false"` (pendiente en Manifiesto) |
+| Sin backup de datos | `android:allowBackup="false"` en `AndroidManifest.xml` |
 
 ### iOS
 
