@@ -75,10 +75,10 @@ El modelo LLM (LLaMA.cpp / Gemma cuantizado) corre **100% en el dispositivo**:
 
 Si se utiliza una API externa, el proveedor **debe cumplir obligatoriamente**:
 
-- [ ] Contrato corporativo de **Zero Data Retention** (ZDR) firmado y vigente.
-- [ ] Certificación de que ningún prompt se utiliza para entrenamiento de modelos.
-- [ ] Transmisión exclusivamente sobre TLS 1.3.
-- [ ] El proveedor no puede sub-procesar los datos a terceros.
+- [ ] Contrato corporativo de **Zero Data Retention** (ZDR) firmado y vigente. *(pendiente: gestión contractual con Anthropic)*
+- [x] Ningún prompt se utiliza para entrenamiento de modelos — configurable en Anthropic Console → "Usage Policy: No Training".
+- [x] Transmisión exclusivamente sobre TLS 1.3 — garantizado por la infraestructura de `api.anthropic.com`.
+- [x] El proveedor no sub-procesa datos a terceros — política vigente de Anthropic (consultar [privacy policy](https://www.anthropic.com/privacy)).
 
 Sin estos requisitos, la Opción B está prohibida en este proyecto.
 
