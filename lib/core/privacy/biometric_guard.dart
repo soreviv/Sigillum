@@ -58,10 +58,7 @@ class _BiometricGuardState extends State<BiometricGuard>
     try {
       final authenticated = await _auth.authenticate(
         localizedReason: 'Verifica tu identidad para continuar en Sigillum.',
-        options: const AuthenticationOptions(
-          biometricOnly: false,
-          stickyAuth: true,
-        ),
+        persistAcrossBackgrounding: true,
       );
       if (mounted) setState(() => _isLocked = !authenticated);
     } catch (_) {
