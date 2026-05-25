@@ -16,6 +16,15 @@ class RagRetriever {
     'lo', 'me', 'si', 'mi', 'te', 'yo', 'tu', 'he', 'ha', 'hay',
   };
 
+  // ⚡ Bolt: Compiled RegExps once to avoid re-compiling them on every single query
+  static final _punctuationRegExp = RegExp(r'[^\wáéíóúüñ\s]');
+  static final _whitespaceRegExp = RegExp(r'\s+');
+
+  // ⚡ Bolt: Caches tokenization of static RAG content to avoid blocking the UI thread
+  // Performance impact: Reduces CPU time significantly on subsequent retrieves since
+  // strings are not re-tokenized or re-lowercased over and over again.
+  final Map<String, Set<String>> _entryTokensCache = {};
+
   /// Retorna hasta [topK] entradas canónicas ordenadas por relevancia.
   /// El resultado se inyecta en el system prompt como contexto doctrinal.
   Future<String> retrieve(String query, {int topK = 3}) async {
@@ -28,10 +37,14 @@ class RagRetriever {
     final scored = <(CanonEntry, int)>[];
     for (final entry in all) {
       var score = 0;
-      final entryTokens = {
-        ..._tokenize(entry.text),
-        ...entry.keywords.map((k) => k.toLowerCase()),
-      };
+      var entryTokens = _entryTokensCache[entry.id];
+      if (entryTokens == null) {
+        entryTokens = {
+          ..._tokenize(entry.text),
+          ...entry.keywords.map((k) => k.toLowerCase()),
+        };
+        _entryTokensCache[entry.id] = entryTokens;
+      }
 
       for (final token in tokens) {
         if (entryTokens.contains(token)) score++;
@@ -54,8 +67,8 @@ class RagRetriever {
 
   List<String> _tokenize(String text) => text
       .toLowerCase()
-      .replaceAll(RegExp(r'[^\wáéíóúüñ\s]'), ' ')
-      .split(RegExp(r'\s+'))
+      .replaceAll(_punctuationRegExp, ' ')
+      .split(_whitespaceRegExp)
       .where((t) => t.length > 2 && !_stopwords.contains(t))
       .toList();
 }

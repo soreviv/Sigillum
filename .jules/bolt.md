@@ -1,0 +1,3 @@
+## 2024-05-25 - Synchronous UI thread blocking in RAG retrieval
+**Learning:** Dart runs on a single main thread (the UI thread) by default. Heavy String processing (like splitting, `toLowerCase`, RegExp replacements, and HashSet allocations) across hundreds of RAG documents blocks the UI thread, causing UI jank/stutter, even inside an `async` function if `await` isn't yielded explicitly during the loop. The original RAG retrieval tokenized all static canonical texts continuously on every single query.
+**Action:** When working with local RAG, always memoize/cache tokenization and embeddings (or use isolates) for static source documents to keep the retrieval loop purely algebraic (set intersections and scoring) instead of text-processing intensive.
