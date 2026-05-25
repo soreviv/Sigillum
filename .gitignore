@@ -1,6 +1,9 @@
 # Secrets — nunca subir al repositorio
 .env
 *.env
+android/key.properties
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
 
 # Miscellaneous
 *.class
@@ -21,11 +24,6 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
 
 # Flutter/Dart/Pub related
 **/doc/api/
