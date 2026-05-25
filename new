@@ -1,0 +1,13 @@
+// Dentro de tu State de ChatScreen
+final _chatController = TextEditingController();
+
+void _triggerPanic() async {
+  await PanicHandler.purgeAndExit([_chatController]);
+}
+
+// En el Scaffold
+floatingActionButton: FloatingActionButton(
+  backgroundColor: Colors.red,
+  onPressed: _triggerPanic,
+  child: const Icon(Icons.bolt), // Botón de Pánico
+),

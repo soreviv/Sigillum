@@ -5,6 +5,7 @@ import '../../core/ai/distillation_parser.dart';
 import '../../core/ai/rag/rag_retriever.dart';
 import '../../core/ai/system_prompt.dart';
 import '../../core/privacy/keyboard_config.dart';
+import '../../core/privacy/panic_handler.dart';
 import '../theme/church_theme.dart';
 import '../widgets/chat_bubble.dart';
 import '../widgets/panic_button.dart';
@@ -142,6 +143,11 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
+  void _triggerPanic() async {
+    _memory.purge();
+    await PanicHandler.purgeAndExit([_controller]);
+  }
+
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollCtrl.hasClients) {
@@ -173,6 +179,11 @@ class _ChatScreenState extends State<ChatScreen> {
           if (_error != null) _buildErrorBanner(),
           _buildBottomBar(),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: kPanic,
+        onPressed: _triggerPanic,
+        child: const Icon(Icons.bolt, color: Colors.white),
       ),
     );
   }
