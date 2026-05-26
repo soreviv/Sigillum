@@ -5,6 +5,7 @@ import '../../core/ai/distillation_parser.dart';
 import '../../core/ai/rag/rag_retriever.dart';
 import '../../core/ai/system_prompt.dart';
 import '../../core/privacy/keyboard_config.dart';
+import '../../core/privacy/panic_handler.dart';
 import '../theme/church_theme.dart';
 import '../widgets/panic_button.dart';
 import '../widgets/sin_card.dart';
@@ -95,13 +96,13 @@ class _DistillationScreenState extends State<DistillationScreen> {
 
   // ── Pánico desde esta pantalla ───────────────────────────────────────────
 
-  void _handlePanic() {
+  Future<void> _handlePanic() async {
     _qplTexts.clear();
     _qplExpanded.clear();
     _loadingQpls.clear();
     widget.onPurgeAll();
-    clearSystemClipboard();
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    if (!mounted) return;
+    await PanicHandler.purgeAndExit([], context: context);
   }
 
   // ── Build ────────────────────────────────────────────────────────────────
