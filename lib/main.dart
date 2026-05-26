@@ -6,7 +6,11 @@ import 'ui/theme/church_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ScreenshotGuard.enable();
+  try {
+    await ScreenshotGuard.enable();
+  } catch (_) {
+    // Privacy guard unavailable on this device — app continues without it.
+  }
   runApp(const SigillumApp());
 }
 

@@ -53,6 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (text.isEmpty || _isStreaming || _isGettingList) return;
 
     _controller.clear();
+    await clearSystemClipboard();
     _error = null;
     _memory.addUser(text);
     _streamBuffer = '';
@@ -87,7 +88,11 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _requestDistillation() async {
     _error = null;
     _memory.addUser('Dame mi lista de destilación estructurada.');
-    setState(() => _isGettingList = true);
+    _streamBuffer = '';
+    setState(() {
+      _isGettingList = true;
+      _isStreaming = true;
+    });
     _scrollToBottom();
 
     final ragContext = await _rag.retrieve('especie número pecados confesar Canon 988');
@@ -100,6 +105,9 @@ class _ChatScreenState extends State<ChatScreen> {
         memory: _memory,
       )) {
         buffer.write(chunk);
+        _streamBuffer = buffer.toString();
+        setState(() {});
+        _scrollToBottom();
       }
       final response = buffer.toString();
       _memory.addAssistant(response);
@@ -108,7 +116,6 @@ class _ChatScreenState extends State<ChatScreen> {
       if (sins.isEmpty) {
         setState(() {
           _error = 'No se pudo estructurar la lista. Continúa narrando tu situación.';
-          _isGettingList = false;
         });
         return;
       }
@@ -127,7 +134,11 @@ class _ChatScreenState extends State<ChatScreen> {
       _memory.addAssistant('');
       setState(() => _error = e.userMessage);
     } finally {
-      setState(() => _isGettingList = false);
+      _streamBuffer = '';
+      setState(() {
+        _isGettingList = false;
+        _isStreaming = false;
+      });
     }
   }
 
@@ -144,8 +155,9 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _triggerPanic() async {
-    _memory.purge();
-    await PanicHandler.purgeAndExit([_controller]);
+    _purgeAll();
+    if (!mounted) return;
+    await PanicHandler.purgeAndExit([_controller], context: context);
   }
 
   void _scrollToBottom() {
@@ -168,7 +180,7 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: const Text('Sigillum', style: TextStyle(letterSpacing: 2)),
         actions: [
-          PanicButton(onConfirmed: _purgeAll),
+          PanicButton(onConfirmed: _triggerPanic),
           const SizedBox(width: 4),
         ],
       ),
@@ -179,11 +191,6 @@ class _ChatScreenState extends State<ChatScreen> {
           if (_error != null) _buildErrorBanner(),
           _buildBottomBar(),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: kPanic,
-        onPressed: _triggerPanic,
-        child: const Icon(Icons.bolt, color: Colors.white),
       ),
     );
   }
