@@ -11,7 +11,7 @@ import 'package:sigillum/main.dart';
 void main() {
   testWidgets('App arranca con pantalla de bloqueo o placeholder',
       (WidgetTester tester) async {
-    await tester.pumpWidget(const SigillumApp());
+    await tester.pumpWidget(const SigillumApp(showOnboarding: false));
     await tester.pump();
     // En test, local_auth no puede verificar biometría: se muestra LockScreen.
     expect(find.byType(SigillumApp), findsOneWidget);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import '../../core/ai/distillation_parser.dart';
 import '../theme/church_theme.dart';
 
@@ -115,12 +116,24 @@ class SinCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: kBorder),
               ),
-              child: Text(
-                qplText!,
-                style: const TextStyle(
-                  color: kTextPrimary,
-                  fontSize: 14,
-                  height: 1.6,
+              child: MarkdownBody(
+                data: qplText!,
+                softLineBreak: true,
+                styleSheet: MarkdownStyleSheet(
+                  p: const TextStyle(
+                    color: kTextPrimary,
+                    fontSize: 14,
+                    height: 1.6,
+                  ),
+                  strong: const TextStyle(
+                    color: kTextPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  listBullet: const TextStyle(
+                    color: kTextMuted,
+                    fontSize: 14,
+                  ),
                 ),
               ),
             ),

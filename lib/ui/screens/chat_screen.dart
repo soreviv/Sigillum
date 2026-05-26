@@ -221,7 +221,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _buildErrorBanner() {
     return Container(
       width: double.infinity,
-      color: kPanic.withAlpha(30),
+      color: kPanic.withValues(alpha: 30 / 255),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Text(_error!, style: const TextStyle(color: kPanic, fontSize: 13)),
     );
@@ -375,7 +375,7 @@ class _ApiKeyWarning extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: kPanic.withAlpha(30),
+      color: kPanic.withValues(alpha: 30 / 255),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: const Text(
         'API key no configurada. Compila con --dart-define=ANTHROPIC_API_KEY=...',

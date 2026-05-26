@@ -14,6 +14,8 @@ dependencies:
   local_auth: ^3.0.1
   no_screenshot: ^1.1.0
   http: ^1.6.0
+  flutter_markdown: ^0.7.7
+  shared_preferences: ^2.3.0
 
 dev_dependencies:
   flutter_test:

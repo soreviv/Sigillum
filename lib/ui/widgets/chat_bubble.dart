@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import '../theme/church_theme.dart';
 
 /// Burbuja de chat para mensajes del usuario y del asistente.
@@ -38,18 +39,44 @@ class ChatBubble extends StatelessWidget {
         ),
         child: isStreaming && message.isEmpty
             ? const _TypingDots()
-            : Text(
-                message,
-                style: const TextStyle(
-                  color: kTextPrimary,
-                  fontSize: 15,
-                  height: 1.55,
-                ),
-              ),
+            : isUser
+                ? Text(
+                    message,
+                    style: const TextStyle(
+                      color: kTextPrimary,
+                      fontSize: 15,
+                      height: 1.55,
+                    ),
+                  )
+                : MarkdownBody(
+                    data: message,
+                    styleSheet: _mdStyle,
+                    softLineBreak: true,
+                  ),
       ),
     );
   }
 }
+
+final _mdStyle = MarkdownStyleSheet(
+  p: const TextStyle(color: kTextPrimary, fontSize: 15, height: 1.55),
+  strong: const TextStyle(
+    color: kTextPrimary,
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+  ),
+  em: const TextStyle(color: kTextMuted, fontSize: 15, fontStyle: FontStyle.italic),
+  listBullet: const TextStyle(color: kTextMuted, fontSize: 15),
+  blockquote: const TextStyle(color: kTextMuted, fontSize: 14, height: 1.5),
+  blockquoteDecoration: const BoxDecoration(
+    border: Border(left: BorderSide(color: kBorder, width: 3)),
+    color: Colors.transparent,
+  ),
+  blockquotePadding: const EdgeInsets.only(left: 12, top: 4, bottom: 4),
+  horizontalRuleDecoration: const BoxDecoration(
+    border: Border(bottom: BorderSide(color: kBorder)),
+  ),
+);
 
 class _TypingDots extends StatefulWidget {
   const _TypingDots();
