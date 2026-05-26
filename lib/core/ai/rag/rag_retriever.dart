@@ -16,6 +16,9 @@ class RagRetriever {
     'lo', 'me', 'si', 'mi', 'te', 'yo', 'tu', 'he', 'ha', 'hay',
   };
 
+  // Cache para tokens y keywords normalizados para evitar recálculo
+  final Map<String, _EntryCache> _cache = {};
+
   /// Retorna hasta [topK] entradas canónicas ordenadas por relevancia.
   /// El resultado se inyecta en el system prompt como contexto doctrinal.
   Future<String> retrieve(String query, {int topK = 3}) async {
@@ -27,16 +30,24 @@ class RagRetriever {
     // Calcular puntuación por entrada
     final scored = <(CanonEntry, int)>[];
     for (final entry in all) {
-      var score = 0;
-      final entryTokens = {
-        ..._tokenize(entry.text),
-        ...entry.keywords.map((k) => k.toLowerCase()),
-      };
+      // ⚡ Bolt: Cachear el texto tokenizado y los keywords en lowercase
+      // para evitar recalcularlos en cada consulta a la base RAG.
+      var cache = _cache[entry.id];
+      if (cache == null) {
+        final keywordsLower = entry.keywords.map((k) => k.toLowerCase()).toList();
+        final textTokens = _tokenize(entry.text);
+        cache = _EntryCache(
+          allTokens: {...textTokens, ...keywordsLower},
+          keywords: keywordsLower,
+        );
+        _cache[entry.id] = cache;
+      }
 
+      var score = 0;
       for (final token in tokens) {
-        if (entryTokens.contains(token)) score++;
+        if (cache.allTokens.contains(token)) score++;
         // Bonus por match en keywords (mayor señal que el texto libre)
-        if (entry.keywords.any((k) => k.toLowerCase() == token)) score++;
+        if (cache.keywords.contains(token)) score++;
       }
 
       if (score > 0) scored.add((entry, score));
@@ -58,4 +69,10 @@ class RagRetriever {
       .split(RegExp(r'\s+'))
       .where((t) => t.length > 2 && !_stopwords.contains(t))
       .toList();
+}
+
+class _EntryCache {
+  const _EntryCache({required this.allTokens, required this.keywords});
+  final Set<String> allTokens;
+  final List<String> keywords;
 }
