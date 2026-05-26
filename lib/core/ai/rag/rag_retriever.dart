@@ -63,10 +63,14 @@ class RagRetriever {
     final scored = <(CanonEntry, int)>[];
     for (final entry in all) {
       var score = 0;
-      final entryTokens = {
-        ..._tokenize(entry.text),
-        ...entry.keywords.map((k) => k.toLowerCase()),
-      };
+      var entryTokens = _entryTokensCache[entry.id];
+      if (entryTokens == null) {
+        entryTokens = {
+          ..._tokenize(entry.text),
+          ...entry.keywords.map((k) => k.toLowerCase()),
+        };
+        _entryTokensCache[entry.id] = entryTokens;
+      }
 
       for (final token in tokens) {
         if (entryTokens.contains(token)) score++;
@@ -99,8 +103,8 @@ class RagRetriever {
 
   List<String> _tokenize(String text) => text
       .toLowerCase()
-      .replaceAll(RegExp(r'[^\wáéíóúüñ\s]'), ' ')
-      .split(RegExp(r'\s+'))
+      .replaceAll(_punctuationRegExp, ' ')
+      .split(_whitespaceRegExp)
       .where((t) => t.length > 2 && !_stopwords.contains(t))
       .toList();
 }
