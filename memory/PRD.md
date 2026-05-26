@@ -62,9 +62,10 @@ App móvil Flutter de desarrollo personal/espiritual: revisar el proyecto existe
 | `test/core/ai/chat_flow_test.dart` | M7: tests de integración (NUEVO) |
 
 ## Backlog / Next Tasks
-- **P0:** Ejecutar `flutter pub get` y `flutter analyze` para validar compilación
-- **P0:** Ejecutar suite de tests: `flutter test`
-- **P1:** Auditoría forense Fase 4 (heap dump, análisis de almacenamiento)
+- **COMPLETADO:** `flutter pub get` — `flutter_windowmanager` eliminado correctamente
+- **COMPLETADO:** `flutter analyze` — 0 issues
+- **COMPLETADO:** `flutter test` — 84 tests, todos pasaron
+- **COMPLETADO:** Auditoría Forense Fase 4 — 17 tests forenses (heap dump, aislamiento, trim, RAG, prompt, API format)
 - **P1:** Considerar migración a Edge AI (LLaMA.cpp/Gemma) para eliminar dependencia de red
 - **P2:** Añadir animaciones de transición entre pantallas
 - **P2:** Modo Iglesia mejorado: pantalla aún más oscura, timer de inactividad
