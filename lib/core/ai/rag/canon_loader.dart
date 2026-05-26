@@ -52,10 +52,15 @@ class CanonLoader {
   }
 
   Future<List<CanonEntry>> _load(String assetPath) async {
-    final raw = await rootBundle.loadString(assetPath);
-    final list = jsonDecode(raw) as List<dynamic>;
-    return list
-        .map((e) => CanonEntry.fromJson(e as Map<String, dynamic>))
-        .toList();
+    try {
+      final raw = await rootBundle.loadString(assetPath);
+      final list = jsonDecode(raw) as List<dynamic>;
+      return list
+          .map((e) => CanonEntry.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (_) {
+      // Asset corrupto o ausente — degradación graceful sin crash.
+      return [];
+    }
   }
 }
