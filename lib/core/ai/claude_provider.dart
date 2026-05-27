@@ -30,7 +30,7 @@ class ClaudeProvider {
             );
 
   static const _endpoint = 'https://api.anthropic.com/v1/messages';
-  static const _model = 'claude-sonnet-4-5-20250929';
+  static const _model = 'claude-sonnet-4-6';
   static const _maxTokens = 2048;
   static const _apiVersion = '2023-06-01';
 

@@ -2,6 +2,9 @@
 .env
 *.env
 android/key.properties
+*.jks
+*.jks.old
+*.keystore
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
 
