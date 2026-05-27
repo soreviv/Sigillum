@@ -11,11 +11,12 @@ class ClaudeProviderException implements Exception {
   final ClaudeError error;
 
   String get userMessage => switch (error) {
-        ClaudeError.noApiKey => 'La aplicación no está configurada correctamente.',
-        ClaudeError.networkError => 'Sin conexión. Verifica tu red e intenta de nuevo.',
-        ClaudeError.rateLimited => 'Demasiadas solicitudes. Espera un momento.',
-        ClaudeError.serverError => 'Error temporal del servicio. Intenta de nuevo.',
-      };
+    ClaudeError.noApiKey => 'La aplicación no está configurada correctamente.',
+    ClaudeError.networkError =>
+      'Sin conexión. Verifica tu red e intenta de nuevo.',
+    ClaudeError.rateLimited => 'Demasiadas solicitudes. Espera un momento.',
+    ClaudeError.serverError => 'Error temporal del servicio. Intenta de nuevo.',
+  };
 }
 
 /// Cliente de la Claude API con soporte de streaming SSE.
@@ -23,11 +24,9 @@ class ClaudeProviderException implements Exception {
 /// NUNCA se almacena ningún mensaje en disco.
 class ClaudeProvider {
   ClaudeProvider({String? apiKey})
-      : _apiKey = apiKey ??
-            const String.fromEnvironment(
-              'ANTHROPIC_API_KEY',
-              defaultValue: '',
-            );
+    : _apiKey =
+          apiKey ??
+          const String.fromEnvironment('ANTHROPIC_API_KEY', defaultValue: '');
 
   static const _endpoint = 'https://api.anthropic.com/v1/messages';
   static const _model = 'claude-sonnet-4-6';
@@ -88,38 +87,31 @@ class ClaudeProvider {
   /// Parsea el stream SSE de Anthropic y emite solo los deltas de texto.
   /// Maneja correctamente chunks parciales que llegan en múltiples paquetes TCP.
   Stream<String> _parseSseStream(Stream<List<int>> byteStream) async* {
-    final buffer = StringBuffer();
+    // ⚡ Bolt: Replace manual, inefficient O(n²) string concatenation and splitting
+    // with Dart's native `Utf8Decoder` and `LineSplitter`. This significantly reduces
+    // memory allocations during streaming, preventing UI jank when receiving large
+    // SSE payloads. It also correctly handles UTF-8 multi-byte characters split across chunks.
+    final lines = byteStream
+        .transform(const Utf8Decoder(allowMalformed: true))
+        .transform(const LineSplitter());
 
-    await for (final bytes in byteStream) {
-      buffer.write(utf8.decode(bytes, allowMalformed: true));
+    await for (final line in lines) {
+      if (!line.startsWith('data: ')) continue;
 
-      // Procesa líneas completas del buffer
-      while (true) {
-        final raw = buffer.toString();
-        final newlineIdx = raw.indexOf('\n');
-        if (newlineIdx == -1) break;
+      final data = line.substring(6);
+      if (data == '[DONE]') return;
 
-        final line = raw.substring(0, newlineIdx).trimRight();
-        buffer.clear();
-        buffer.write(raw.substring(newlineIdx + 1));
-
-        if (!line.startsWith('data: ')) continue;
-
-        final data = line.substring(6);
-        if (data == '[DONE]') return;
-
-        try {
-          final json = jsonDecode(data) as Map<String, dynamic>;
-          if (json['type'] == 'content_block_delta') {
-            final delta = json['delta'] as Map<String, dynamic>?;
-            if (delta?['type'] == 'text_delta') {
-              final text = delta!['text'] as String? ?? '';
-              if (text.isNotEmpty) yield text;
-            }
+      try {
+        final json = jsonDecode(data) as Map<String, dynamic>;
+        if (json['type'] == 'content_block_delta') {
+          final delta = json['delta'] as Map<String, dynamic>?;
+          if (delta?['type'] == 'text_delta') {
+            final text = delta!['text'] as String? ?? '';
+            if (text.isNotEmpty) yield text;
           }
-        } on FormatException {
-          // Chunk malformado — ignorar sin lanzar
         }
+      } on FormatException {
+        // Chunk malformado — ignorar sin lanzar
       }
     }
   }
