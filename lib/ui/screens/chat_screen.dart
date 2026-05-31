@@ -40,6 +40,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     _memory.purge();
+    _claude.dispose(); // ⚡ Bolt: Cleanup the HTTP client
     _controller.dispose();
     _scrollCtrl.dispose();
     _focusNode.dispose();

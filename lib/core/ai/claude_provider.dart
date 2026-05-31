@@ -35,7 +35,16 @@ class ClaudeProvider {
 
   final String _apiKey;
 
+  // ⚡ Bolt: Usar un cliente HTTP persistente en lugar de request.send()
+  // que abre y cierra sockets subyacentes por cada request, penalizando
+  // severamente la latencia, especialmente durante el TLS handshake inicial.
+  final http.Client _client = http.Client();
+
   bool get isConfigured => _apiKey.isNotEmpty;
+
+  void dispose() {
+    _client.close();
+  }
 
   /// Envía los mensajes a Claude y emite los fragmentos de texto conforme llegan.
   /// El estado de la conversación NO se persiste aquí; el llamador gestiona [ConversationMemory].
@@ -66,7 +75,8 @@ class ClaudeProvider {
 
     late http.StreamedResponse response;
     try {
-      response = await request.send();
+      // ⚡ Bolt: Usando conexión HTTP keep-alive reutilizable
+      response = await _client.send(request);
     } on Exception {
       throw const ClaudeProviderException(ClaudeError.networkError);
     }
