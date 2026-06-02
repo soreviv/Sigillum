@@ -8,7 +8,8 @@ class RagRetriever {
       : _loader = loader ?? CanonLoader.instance;
 
   final CanonLoader _loader;
-  final _cache = <String, _EntryCache>{};
+  // ⚡ Bolt: Make cache static to avoid redundant tokenization across screen navigation.
+  static final _cache = <String, _EntryCache>{};
 
   static final _punctuationRegExp = RegExp(r'[^\w\sáéíóúüñÁÉÍÓÚÜÑ]');
   static final _whitespaceRegExp = RegExp(r'\s+');

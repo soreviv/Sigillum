@@ -33,6 +33,11 @@ class ClaudeProvider {
   static const _maxTokens = 2048;
   static const _apiVersion = '2023-06-01';
 
+  // ⚡ Bolt: Global HTTP client enables TCP connection reuse and Keep-Alive.
+  // This eliminates the ~200-500ms DNS and TLS handshake latency for all subsequent
+  // API calls after the first one, significantly improving backend performance.
+  static final http.Client _httpClient = http.Client();
+
   final String _apiKey;
 
   bool get isConfigured => _apiKey.isNotEmpty;
@@ -66,7 +71,7 @@ class ClaudeProvider {
 
     late http.StreamedResponse response;
     try {
-      response = await request.send();
+      response = await _httpClient.send(request);
     } on Exception {
       throw const ClaudeProviderException(ClaudeError.networkError);
     }
