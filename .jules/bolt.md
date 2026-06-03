@@ -5,3 +5,7 @@
 ## 2026-05-18 - [Optimizing SSE Stream Parsers in Dart]
 **Learning:** Manual string concatenation (`StringBuffer` and `indexOf('\n')`) for parsing Server-Sent Events (SSE) from `http.StreamedResponse` is inefficient (creates many intermediate string objects and causes memory allocations/UI jank). Furthermore, manually decoding chunks with `utf8.decode(bytes)` incorrectly handles multi-byte UTF-8 characters (like 'ñ', 'ó') that happen to get split across TCP chunk boundaries, rendering as malformed bytes ().
 **Action:** Use Dart's native stream transformers (`byteStream.transform(const Utf8Decoder(allowMalformed: true)).transform(const LineSplitter())`) instead. It is significantly faster, reduces garbage collection overhead, and correctly buffers multi-byte characters split across network chunks.
+
+## 2026-06-03 - [Optimizing Flutter Streaming Re-renders]
+**Learning:** Using `setState(() {})` inside an `await for` loop that processes network streams (like Server-Sent Events) triggers a full-screen rebuild for every single chunk received. In a chat app, this means needlessly re-parsing and re-rendering all previous Markdown messages hundreds of times per second, causing severe UI jank.
+**Action:** Replace the local string variable with a `ValueNotifier<String>` and wrap ONLY the actively streaming widget (e.g. the typing bubble) in a `ValueListenableBuilder`. Update `notifier.value` during the stream instead of calling `setState`, which isolates the rebuilds exclusively to the single node that needs them.
