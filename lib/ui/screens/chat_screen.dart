@@ -64,16 +64,27 @@ class _ChatScreenState extends State<ChatScreen> {
     final prompt = buildSystemPrompt(ragContext);
 
     final buffer = StringBuffer();
+    // ⚡ Bolt: Throttling state updates during streaming prevents excessive
+    // Widget re-renders (especially MarkdownBody) and scroll-animation queueing.
+    final throttle = Stopwatch()..start();
     try {
       await for (final chunk in _claude.streamResponse(
         systemPrompt: prompt,
         memory: _memory,
       )) {
         buffer.write(chunk);
-        _streamBuffer = buffer.toString();
-        setState(() {});
-        _scrollToBottom();
+
+        if (throttle.elapsedMilliseconds > 50) {
+          _streamBuffer = buffer.toString();
+          setState(() {});
+          _scrollToBottom();
+          throttle.reset();
+        }
       }
+      // Ensure the final state is rendered.
+      _streamBuffer = buffer.toString();
+      setState(() {});
+      _scrollToBottom();
       _memory.addAssistant(buffer.toString());
     } on ClaudeProviderException catch (e) {
       _memory.addAssistant('');
@@ -99,17 +110,26 @@ class _ChatScreenState extends State<ChatScreen> {
     final prompt = buildSystemPrompt(ragContext);
 
     final buffer = StringBuffer();
+    // ⚡ Bolt: Throttling state updates during streaming.
+    final throttle = Stopwatch()..start();
     try {
       await for (final chunk in _claude.streamResponse(
         systemPrompt: prompt,
         memory: _memory,
       )) {
         buffer.write(chunk);
-        _streamBuffer = buffer.toString();
-        setState(() {});
-        _scrollToBottom();
+        if (throttle.elapsedMilliseconds > 50) {
+          _streamBuffer = buffer.toString();
+          setState(() {});
+          _scrollToBottom();
+          throttle.reset();
+        }
       }
       final response = buffer.toString();
+      // Ensure the final state is rendered.
+      _streamBuffer = response;
+      setState(() {});
+      _scrollToBottom();
       _memory.addAssistant(response);
 
       final sins = parseDistillation(response);
