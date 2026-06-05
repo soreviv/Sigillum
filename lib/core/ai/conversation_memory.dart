@@ -2,6 +2,8 @@
 /// No hay serialización, no hay escritura a disco, no hay persistencia.
 library;
 
+import 'dart:collection';
+
 /// Un mensaje individual en la conversación.
 final class ChatMessage {
   const ChatMessage({required this.role, required this.content});
@@ -19,7 +21,11 @@ final class ConversationMemory {
   /// Máximo de turnos conservados para no saturar el contexto de la API.
   static const int _maxTurns = 20;
 
-  List<ChatMessage> get messages => List.unmodifiable(_messages);
+  // ⚡ Bolt: Replace List.unmodifiable (which performs an O(N) allocation and copy)
+  // with UnmodifiableListView (which is an O(1) wrapper). This prevents significant
+  // Garbage Collection (GC) pressure and UI jank because `messages` is called frequently
+  // (multiple times per second) during SSE streaming rebuilds.
+  List<ChatMessage> get messages => UnmodifiableListView(_messages);
 
   bool get isEmpty => _messages.isEmpty;
 
@@ -52,8 +58,11 @@ final class ConversationMemory {
       _messages.map((m) => m.toApiMap()).toList();
 
   void _trim() {
-    while (_messages.length > _maxTurns * 2) {
-      _messages.removeAt(0);
+    // ⚡ Bolt: Use `removeRange` instead of a `while` loop calling `removeAt(0)`.
+    // `removeAt(0)` in a loop takes O(N*k) time because it shifts all remaining
+    // elements after every deletion. `removeRange` handles this in O(N).
+    if (_messages.length > _maxTurns * 2) {
+      _messages.removeRange(0, _messages.length - _maxTurns * 2);
     }
   }
 }
