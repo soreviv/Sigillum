@@ -5,3 +5,7 @@
 ## 2026-05-18 - [Optimizing SSE Stream Parsers in Dart]
 **Learning:** Manual string concatenation (`StringBuffer` and `indexOf('\n')`) for parsing Server-Sent Events (SSE) from `http.StreamedResponse` is inefficient (creates many intermediate string objects and causes memory allocations/UI jank). Furthermore, manually decoding chunks with `utf8.decode(bytes)` incorrectly handles multi-byte UTF-8 characters (like 'ñ', 'ó') that happen to get split across TCP chunk boundaries, rendering as malformed bytes ().
 **Action:** Use Dart's native stream transformers (`byteStream.transform(const Utf8Decoder(allowMalformed: true)).transform(const LineSplitter())`) instead. It is significantly faster, reduces garbage collection overhead, and correctly buffers multi-byte characters split across network chunks.
+
+## 2026-05-19 - [Optimizing Stream Buffering in Flutter]
+**Learning:** Calling `setState(() {})` repeatedly on every incoming stream chunk in a StatefulWidget (like `ChatScreen`) is an anti-pattern. It causes the entire widget tree to rebuild unnecessarily, leading to excessive CPU usage and dropped frames when processing long streams.
+**Action:** Use a `ValueNotifier<String>` to hold the stream buffer and wrap only the target widget (`ChatBubble`) in a `ValueListenableBuilder`. This isolates re-renders to the specific component that needs updating, keeping the UI smooth during heavy AI stream processing.
