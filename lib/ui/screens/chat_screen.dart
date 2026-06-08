@@ -64,6 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final prompt = buildSystemPrompt(ragContext);
 
     final buffer = StringBuffer();
+    final stopwatch = Stopwatch()..start();
     try {
       await for (final chunk in _claude.streamResponse(
         systemPrompt: prompt,
@@ -71,9 +72,17 @@ class _ChatScreenState extends State<ChatScreen> {
       )) {
         buffer.write(chunk);
         _streamBuffer = buffer.toString();
-        setState(() {});
-        _scrollToBottom();
+        // ⚡ Bolt: Throttle UI updates to max ~20fps (50ms) to prevent
+        // Flutter engine jank from excessive re-renders during fast streams.
+        if (stopwatch.elapsedMilliseconds > 50) {
+          setState(() {});
+          _scrollToBottom();
+          stopwatch.reset();
+        }
       }
+      // Ensure the final chunk is rendered
+      setState(() {});
+      _scrollToBottom();
       _memory.addAssistant(buffer.toString());
     } on ClaudeProviderException catch (e) {
       _memory.addAssistant('');
@@ -99,6 +108,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final prompt = buildSystemPrompt(ragContext);
 
     final buffer = StringBuffer();
+    final stopwatch = Stopwatch()..start();
     try {
       await for (final chunk in _claude.streamResponse(
         systemPrompt: prompt,
@@ -106,9 +116,17 @@ class _ChatScreenState extends State<ChatScreen> {
       )) {
         buffer.write(chunk);
         _streamBuffer = buffer.toString();
-        setState(() {});
-        _scrollToBottom();
+        // ⚡ Bolt: Throttle UI updates to max ~20fps (50ms) to prevent
+        // Flutter engine jank from excessive re-renders during fast streams.
+        if (stopwatch.elapsedMilliseconds > 50) {
+          setState(() {});
+          _scrollToBottom();
+          stopwatch.reset();
+        }
       }
+      // Ensure the final chunk is rendered
+      setState(() {});
+      _scrollToBottom();
       final response = buffer.toString();
       _memory.addAssistant(response);
 

@@ -5,3 +5,7 @@
 ## 2026-05-18 - [Optimizing SSE Stream Parsers in Dart]
 **Learning:** Manual string concatenation (`StringBuffer` and `indexOf('\n')`) for parsing Server-Sent Events (SSE) from `http.StreamedResponse` is inefficient (creates many intermediate string objects and causes memory allocations/UI jank). Furthermore, manually decoding chunks with `utf8.decode(bytes)` incorrectly handles multi-byte UTF-8 characters (like 'ñ', 'ó') that happen to get split across TCP chunk boundaries, rendering as malformed bytes ().
 **Action:** Use Dart's native stream transformers (`byteStream.transform(const Utf8Decoder(allowMalformed: true)).transform(const LineSplitter())`) instead. It is significantly faster, reduces garbage collection overhead, and correctly buffers multi-byte characters split across network chunks.
+
+## 2026-05-18 - [Throttling UI Updates in Fast Streams]
+**Learning:** Calling `setState(() {})` inside a tight `await for` loop reading fast-emitting Server-Sent Events (SSE) causes excessive UI re-renders. In Flutter, this can overwhelm the rendering engine, dropping frames and causing significant animation jank, especially when scrolling lists simultaneously.
+**Action:** Always throttle UI updates when reading fast streams in Flutter. Use a `Stopwatch` to track elapsed time and only trigger `setState` at a controlled interval (e.g., 50ms, or ~20fps), ensuring a final `setState` is called after the loop finishes to render the last chunk.
