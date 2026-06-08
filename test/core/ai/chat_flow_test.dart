@@ -16,23 +16,23 @@ void main() {
       const ragContext = 'Canon 988 §1: El fiel está obligado a confesar...';
       final prompt = buildSystemPrompt(ragContext);
       expect(prompt, contains('Canon 988'));
-      expect(prompt, contains('DOCTRINA DE REFERENCIA'));
+      expect(prompt, contains('--- CONTEXTO DOCTRINAL PARA LA REFLEXIÓN ---'));
     });
 
     test('funciona sin contexto RAG (prompt base solamente)', () {
       final prompt = buildSystemPrompt('');
-      expect(prompt, contains('REGLAS INQUEBRANTABLES'));
-      expect(prompt, isNot(contains('DOCTRINA DE REFERENCIA')));
+      expect(prompt, contains('TUS REGLAS DE ORO'));
+      expect(prompt, isNot(contains('--- CONTEXTO DOCTRINAL PARA LA REFLEXIÓN ---')));
     });
 
     test('contiene todas las reglas de seguridad del prompt', () {
       final prompt = buildSystemPrompt('');
-      expect(prompt, contains('NUNCA simules empatía'));
-      expect(prompt, contains('NUNCA des la absolución'));
-      expect(prompt, contains('ESPECIE'));
-      expect(prompt, contains('NÚMERO'));
-      expect(prompt, contains('---DESTILACIÓN---'));
-      expect(prompt, contains('---QPL:'));
+      expect(prompt, contains('VALIDACIÓN EMOCIONAL'));
+      expect(prompt, contains('TONO SOCRÁTICO'));
+      expect(prompt, contains('PREGUNTAS ABIERTAS'));
+      expect(prompt, contains('SIGILO TÉCNICO'));
+      expect(prompt, contains('ROL NO SACRAMENTAL'));
+      expect(prompt, contains('TONO RECOMENDADO'));
     });
   });
 

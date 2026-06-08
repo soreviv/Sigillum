@@ -207,21 +207,21 @@ void main() {
   // PUNTO 5: System Prompt — reglas de privacidad verificadas
   // ══════════════════════════════════════════════════════════════════════════
   group('[FASE4-05] System Prompt — reglas de privacidad', () {
-    test('el prompt prohíbe explícitamente empatía simulada', () {
+    test('el prompt exige validación emocional', () {
       final prompt = buildSystemPrompt('');
-      expect(prompt, contains('NUNCA simules empatía'));
-      expect(prompt, contains('entiendo'));
-      expect(prompt, contains('lo siento'));
+      expect(prompt, contains('VALIDACIÓN EMOCIONAL'));
+      expect(prompt, contains('escuchas su corazón'));
     });
 
-    test('el prompt prohíbe dar absolución', () {
+    test('el prompt distingue el rol sacramental', () {
       final prompt = buildSystemPrompt('');
-      expect(prompt, contains('NUNCA des la absolución'));
+      expect(prompt, contains('ROL NO SACRAMENTAL'));
+      expect(prompt, contains('No eres un sacerdote'));
     });
 
-    test('el prompt exige eliminar detalles morbosos', () {
+    test('el prompt exige sigilo técnico', () {
       final prompt = buildSystemPrompt('');
-      expect(prompt, contains('Elimina ABSOLUTAMENTE TODOS los detalles morbosos'));
+      expect(prompt, contains('SIGILO TÉCNICO ABSOLUTO'));
     });
 
     test('el prompt define el formato exacto de destilación', () {
@@ -229,13 +229,13 @@ void main() {
       expect(prompt, contains('---DESTILACIÓN---'));
       expect(prompt, contains('---FIN---'));
       expect(prompt, contains('[especie del pecado]'));
-      expect(prompt, contains('[número aproximado]'));
+      expect(prompt, contains('[matiz emocional'));
     });
 
     test('el prompt define el formato QPL', () {
       final prompt = buildSystemPrompt('');
       expect(prompt, contains('---QPL:'));
-      expect(prompt, contains('virtud opuesta'));
+      expect(prompt, contains('virtud'));
     });
   });
 
