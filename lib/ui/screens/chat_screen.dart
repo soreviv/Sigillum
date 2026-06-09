@@ -63,6 +63,13 @@ class _ChatScreenState extends State<ChatScreen> {
     final ragContext = await _rag.retrieve(text);
     final prompt = buildSystemPrompt(ragContext);
 
+    // ⚡ Bolt: Throttled UI updates during stream parsing.
+    // Rebuilding the widget tree and triggering scroll animations on every single
+    // SSE chunk is an O(N²) operation that causes severe UI jank, especially when
+    // parsing Markdown. By throttling updates to 50ms, we maintain smooth ~20fps
+    // animations while drastically reducing CPU overhead.
+    final stopwatch = Stopwatch()..start();
+
     final buffer = StringBuffer();
     try {
       await for (final chunk in _claude.streamResponse(
@@ -71,8 +78,12 @@ class _ChatScreenState extends State<ChatScreen> {
       )) {
         buffer.write(chunk);
         _streamBuffer = buffer.toString();
-        setState(() {});
-        _scrollToBottom();
+
+        if (stopwatch.elapsedMilliseconds > 50) {
+          setState(() {});
+          _scrollToBottom();
+          stopwatch.reset();
+        }
       }
       _memory.addAssistant(buffer.toString());
     } on ClaudeProviderException catch (e) {
@@ -98,6 +109,8 @@ class _ChatScreenState extends State<ChatScreen> {
     final ragContext = await _rag.retrieve('especie número pecados confesar Canon 988');
     final prompt = buildSystemPrompt(ragContext);
 
+    final stopwatch = Stopwatch()..start();
+
     final buffer = StringBuffer();
     try {
       await for (final chunk in _claude.streamResponse(
@@ -106,8 +119,12 @@ class _ChatScreenState extends State<ChatScreen> {
       )) {
         buffer.write(chunk);
         _streamBuffer = buffer.toString();
-        setState(() {});
-        _scrollToBottom();
+
+        if (stopwatch.elapsedMilliseconds > 50) {
+          setState(() {});
+          _scrollToBottom();
+          stopwatch.reset();
+        }
       }
       final response = buffer.toString();
       _memory.addAssistant(response);
