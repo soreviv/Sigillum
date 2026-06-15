@@ -9,3 +9,10 @@
 ## 2026-06-04 - [Throttling setState in SSE Loops for Flutter]
 **Learning:** Calling `setState()` and queuing scroll animations (like `_scrollToBottom()`) indiscriminately on *every single token/chunk* received from a fast Server-Sent Events (SSE) stream causes massive widget tree churn, especially when rebuilding expensive widgets like `MarkdownBody`. This leads to severe UI jank, high CPU utilization, and dropped frames, effectively starving the main thread.
 **Action:** Throttle the UI updates (e.g. using a `Stopwatch`) inside high-frequency SSE consumption loops to roughly 50ms (~20fps). This preserves perfectly smooth visual streaming while drastically slashing the render workload and `postFrameCallback` overhead.
+## 2026-06-14 - [Flutter Stream Rendering Bottleneck]
+**Learning:** Updating a stream buffer inside a  call during an  loop causes the entire screen to rebuild for every single chunk received, leading to severe UI jank.
+**Action:** Use  and  to scope rebuilds only to the specific widget displaying the streaming text.
+
+## 2026-06-14 - [Flutter Stream Rendering Bottleneck]
+**Learning:** Updating a stream buffer inside a `setState()` call during an `await for` loop causes the entire screen to rebuild for every single chunk received, leading to severe UI jank.
+**Action:** Use `ValueNotifier` and `ValueListenableBuilder` to scope rebuilds only to the specific widget displaying the streaming text.

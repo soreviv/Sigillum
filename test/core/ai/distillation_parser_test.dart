@@ -106,4 +106,35 @@ P2: ¿Qué penitencia recomienda el confesor para la ira?
       expect(parseQpl(text), isEmpty);
     });
   });
+
+  // ── parseContext ─────────────────────────────────────────────────────────
+  group('parseContext', () {
+    test('detecta tono compasivo ante dolor', () {
+      final context = parseContext(
+          'Siento mucho dolor y angustia por lo que hice', 'Contexto RAG');
+      expect(context['tone'], 'compasivo');
+      expect(context['dynamicInstruction'], contains('vulnerabilidad y dolor'));
+      expect(context['originalMessage'],
+          'Siento mucho dolor y angustia por lo que hice');
+      expect(context['ragContext'], 'Contexto RAG');
+    });
+
+    test('detecta tono misericordioso ante culpa', () {
+      final context = parseContext('Me siento muy arrepentido, he fallado mucho', '');
+      expect(context['tone'], 'misericordioso');
+      expect(context['dynamicInstruction'], contains('arrepentimiento o culpa'));
+    });
+
+    test('detecta tono socrático ante dudas', () {
+      final context = parseContext('¿Por qué me cuesta tanto encontrar la paz?', '');
+      expect(context['tone'], 'socrático');
+      expect(context['dynamicInstruction'], contains('reflexionando o tiene dudas'));
+    });
+
+    test('usa tono cálido por defecto', () {
+      final context = parseContext('Hola, quiero empezar mi examen', '');
+      expect(context['tone'], 'cálido');
+      expect(context['dynamicInstruction'], contains('acompañamiento cálido'));
+    });
+  });
 }
