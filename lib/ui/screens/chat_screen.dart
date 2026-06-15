@@ -31,7 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   bool   _isStreaming    = false;
   bool   _isGettingList  = false;
-  final ValueNotifier<String> _streamBufferNotifier = ValueNotifier<String>('');
+  final  _streamBuffer   = ValueNotifier<String>('');
   String? _error;
 
   bool get _hasAiResponse =>
@@ -44,7 +44,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _controller.dispose();
     _scrollCtrl.dispose();
     _focusNode.dispose();
-    _streamBufferNotifier.dispose();
+    _streamBuffer.dispose();
     super.dispose();
   }
 
@@ -58,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
     await clearSystemClipboard();
     _error = null;
     _memory.addUser(text);
-    _streamBufferNotifier.value = '';
+    _streamBuffer.value = '';
     setState(() => _isStreaming = true);
     _scrollToBottom();
 
@@ -75,13 +75,8 @@ class _ChatScreenState extends State<ChatScreen> {
         memory: _memory,
       )) {
         buffer.write(chunk);
-
-        if (throttle.elapsedMilliseconds > 50) {
-          _streamBuffer = buffer.toString();
-          setState(() {});
-          _scrollToBottom();
-          throttle.reset();
-        }
+        _streamBuffer.value = buffer.toString();
+        _scrollToBottom();
       }
       // Ensure the final state is rendered.
       _streamBuffer = buffer.toString();
@@ -92,7 +87,7 @@ class _ChatScreenState extends State<ChatScreen> {
       _memory.addAssistant('');
       setState(() => _error = e.userMessage);
     } finally {
-      _streamBufferNotifier.value = '';
+      _streamBuffer.value = '';
       setState(() => _isStreaming = false);
       _scrollToBottom();
     }
@@ -101,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _requestDistillation() async {
     _error = null;
     _memory.addUser('Dame mi lista de destilación estructurada.');
-    _streamBufferNotifier.value = '';
+    _streamBuffer.value = '';
     setState(() {
       _isGettingList = true;
       _isStreaming = true;
@@ -120,12 +115,8 @@ class _ChatScreenState extends State<ChatScreen> {
         memory: _memory,
       )) {
         buffer.write(chunk);
-        if (throttle.elapsedMilliseconds > 50) {
-          _streamBuffer = buffer.toString();
-          setState(() {});
-          _scrollToBottom();
-          throttle.reset();
-        }
+        _streamBuffer.value = buffer.toString();
+        _scrollToBottom();
       }
       final response = buffer.toString();
       // Ensure the final state is rendered.
@@ -156,7 +147,7 @@ class _ChatScreenState extends State<ChatScreen> {
       _memory.addAssistant('');
       setState(() => _error = e.userMessage);
     } finally {
-      _streamBufferNotifier.value = '';
+      _streamBuffer.value = '';
       setState(() {
         _isGettingList = false;
         _isStreaming = false;
@@ -168,7 +159,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _memory.purge();
     clearSystemClipboard();
     _controller.clear();
-    _streamBufferNotifier.value = '';
+    _streamBuffer.value = '';
     setState(() {
       _isStreaming   = false;
       _isGettingList = false;
@@ -232,10 +223,10 @@ class _ChatScreenState extends State<ChatScreen> {
           return ChatBubble(message: m.content, isUser: m.role == 'user');
         }
         return ValueListenableBuilder<String>(
-          valueListenable: _streamBufferNotifier,
-          builder: (context, streamBuffer, _) {
+          valueListenable: _streamBuffer,
+          builder: (context, streamBufferValue, child) {
             return ChatBubble(
-              message: streamBuffer,
+              message: streamBufferValue,
               isUser: false,
               isStreaming: true,
             );
