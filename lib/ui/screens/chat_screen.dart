@@ -31,7 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   bool   _isStreaming    = false;
   bool   _isGettingList  = false;
-  final ValueNotifier<String> _streamBuffer = ValueNotifier<String>('');
+  final _streamBuffer = ValueNotifier<String>('');
   String? _error;
 
   bool get _hasAiResponse =>
@@ -76,8 +76,6 @@ class _ChatScreenState extends State<ChatScreen> {
       )) {
         buffer.write(chunk);
         _streamBuffer.value = buffer.toString();
-        // ⚡ Bolt: Using ValueNotifier updates the localized ChatBubble only
-        // avoiding an O(tokens) complete rebuild of ChatScreen and old Markdown bodies.
         _scrollToBottom();
       }
       // Ensure the final state is rendered.
@@ -118,7 +116,6 @@ class _ChatScreenState extends State<ChatScreen> {
       )) {
         buffer.write(chunk);
         _streamBuffer.value = buffer.toString();
-        // ⚡ Bolt: Avoid costly UI rebuilds per token.
         _scrollToBottom();
       }
       final response = buffer.toString();
@@ -227,9 +224,9 @@ class _ChatScreenState extends State<ChatScreen> {
         }
         return ValueListenableBuilder<String>(
           valueListenable: _streamBuffer,
-          builder: (context, bufferValue, child) {
+          builder: (context, value, child) {
             return ChatBubble(
-              message: bufferValue,
+              message: value,
               isUser: false,
               isStreaming: true,
             );
