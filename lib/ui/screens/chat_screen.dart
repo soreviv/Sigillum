@@ -31,11 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   bool   _isStreaming    = false;
   bool   _isGettingList  = false;
-
-  // ⚡ Bolt: Using ValueNotifier for streaming text chunks instead of monolithic setState()
-  // This prevents full tree rebuilds on every token received, significantly reducing UI jank.
-  final _streamNotifier = ValueNotifier<String>('');
-
+  final ValueNotifier<String> _streamBufferNotifier = ValueNotifier('');
   String? _error;
 
   bool get _hasAiResponse =>
@@ -44,7 +40,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     _memory.purge();
-    _claude.dispose(); // ⚡ Bolt: Cleanup the HTTP client
+    _streamBufferNotifier.dispose();
     _controller.dispose();
     _scrollCtrl.dispose();
     _focusNode.dispose();
@@ -62,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
     await clearSystemClipboard();
     _error = null;
     _memory.addUser(text);
-    _streamNotifier.value = '';
+    _streamBufferNotifier.value = '';
     setState(() => _isStreaming = true);
     _scrollToBottom();
 
@@ -79,8 +75,9 @@ class _ChatScreenState extends State<ChatScreen> {
         memory: _memory,
       )) {
         buffer.write(chunk);
-        _streamNotifier.value = buffer.toString();
-        // ⚡ Bolt: Replaced setState() with ValueNotifier update here to prevent full rebuilds
+        //⚡ Bolt optimization: Update ValueNotifier instead of calling setState on every chunk
+        // Prevents full widget tree rebuilds during high-frequency SSE updates.
+        _streamBufferNotifier.value = buffer.toString();
         _scrollToBottom();
       }
       // Ensure the final state is rendered.
@@ -92,7 +89,7 @@ class _ChatScreenState extends State<ChatScreen> {
       _memory.addAssistant('');
       setState(() => _error = e.userMessage);
     } finally {
-      _streamNotifier.value = '';
+      _streamBufferNotifier.value = '';
       setState(() => _isStreaming = false);
       _scrollToBottom();
     }
@@ -101,7 +98,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _requestDistillation() async {
     _error = null;
     _memory.addUser('Dame mi lista de destilación estructurada.');
-    _streamNotifier.value = '';
+    _streamBufferNotifier.value = '';
     setState(() {
       _isGettingList = true;
       _isStreaming = true;
@@ -120,8 +117,9 @@ class _ChatScreenState extends State<ChatScreen> {
         memory: _memory,
       )) {
         buffer.write(chunk);
-        _streamNotifier.value = buffer.toString();
-        // ⚡ Bolt: Replaced setState() with ValueNotifier update here to prevent full rebuilds
+        //⚡ Bolt optimization: Update ValueNotifier instead of calling setState on every chunk
+        // Prevents full widget tree rebuilds during high-frequency SSE updates.
+        _streamBufferNotifier.value = buffer.toString();
         _scrollToBottom();
       }
       final response = buffer.toString();
@@ -153,7 +151,7 @@ class _ChatScreenState extends State<ChatScreen> {
       _memory.addAssistant('');
       setState(() => _error = e.userMessage);
     } finally {
-      _streamNotifier.value = '';
+      _streamBufferNotifier.value = '';
       setState(() {
         _isGettingList = false;
         _isStreaming = false;
@@ -165,7 +163,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _memory.purge();
     clearSystemClipboard();
     _controller.clear();
-    _streamNotifier.value = '';
+    _streamBufferNotifier.value = '';
     setState(() {
       _isStreaming   = false;
       _isGettingList = false;
@@ -229,10 +227,10 @@ class _ChatScreenState extends State<ChatScreen> {
           return ChatBubble(message: m.content, isUser: m.role == 'user');
         }
         return ValueListenableBuilder<String>(
-          valueListenable: _streamNotifier,
-          builder: (context, value, child) {
+          valueListenable: _streamBufferNotifier,
+          builder: (context, currentBuffer, child) {
             return ChatBubble(
-              message: value,
+              message: currentBuffer,
               isUser: false,
               isStreaming: true,
             );
