@@ -1,6 +1,7 @@
 /// Estado efímero de la conversación. Vive exclusivamente en RAM.
 /// No hay serialización, no hay escritura a disco, no hay persistencia.
 library;
+import 'dart:collection';
 
 /// Un mensaje individual en la conversación.
 final class ChatMessage {
@@ -19,7 +20,7 @@ final class ConversationMemory {
   /// Máximo de turnos conservados para no saturar el contexto de la API.
   static const int _maxTurns = 20;
 
-  List<ChatMessage> get messages => List.unmodifiable(_messages);
+  List<ChatMessage> get messages => UnmodifiableListView(_messages);
 
   bool get isEmpty => _messages.isEmpty;
 
