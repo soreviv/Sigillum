@@ -65,6 +65,13 @@ class _ChatScreenState extends State<ChatScreen> {
     final ragContext = await _rag.retrieve(text);
     final prompt = buildSystemPrompt(ragContext);
 
+    // ⚡ Bolt: Throttled UI updates during stream parsing.
+    // Rebuilding the widget tree and triggering scroll animations on every single
+    // SSE chunk is an O(N²) operation that causes severe UI jank, especially when
+    // parsing Markdown. By throttling updates to 50ms, we maintain smooth ~20fps
+    // animations while drastically reducing CPU overhead.
+    final stopwatch = Stopwatch()..start();
+
     final buffer = StringBuffer();
     // ⚡ Bolt: Throttling state updates during streaming prevents excessive
     // Widget re-renders (especially MarkdownBody) and scroll-animation queueing.
@@ -75,10 +82,13 @@ class _ChatScreenState extends State<ChatScreen> {
         memory: _memory,
       )) {
         buffer.write(chunk);
-        //⚡ Bolt optimization: Update ValueNotifier instead of calling setState on every chunk
-        // Prevents full widget tree rebuilds during high-frequency SSE updates.
-        _streamBufferNotifier.value = buffer.toString();
-        _scrollToBottom();
+        _streamBuffer = buffer.toString();
+
+        if (stopwatch.elapsedMilliseconds > 50) {
+          setState(() {});
+          _scrollToBottom();
+          stopwatch.reset();
+        }
       }
       // Ensure the final state is rendered.
       _streamBuffer = buffer.toString();
@@ -108,6 +118,8 @@ class _ChatScreenState extends State<ChatScreen> {
     final ragContext = await _rag.retrieve('especie número pecados confesar Canon 988');
     final prompt = buildSystemPrompt(ragContext);
 
+    final stopwatch = Stopwatch()..start();
+
     final buffer = StringBuffer();
     // ⚡ Bolt: Throttling state updates during streaming.
     final throttle = Stopwatch()..start();
@@ -117,10 +129,13 @@ class _ChatScreenState extends State<ChatScreen> {
         memory: _memory,
       )) {
         buffer.write(chunk);
-        //⚡ Bolt optimization: Update ValueNotifier instead of calling setState on every chunk
-        // Prevents full widget tree rebuilds during high-frequency SSE updates.
-        _streamBufferNotifier.value = buffer.toString();
-        _scrollToBottom();
+        _streamBuffer = buffer.toString();
+
+        if (stopwatch.elapsedMilliseconds > 50) {
+          setState(() {});
+          _scrollToBottom();
+          stopwatch.reset();
+        }
       }
       final response = buffer.toString();
       // Ensure the final state is rendered.
