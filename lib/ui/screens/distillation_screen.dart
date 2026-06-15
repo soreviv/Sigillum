@@ -39,6 +39,7 @@ class _DistillationScreenState extends State<DistillationScreen> {
   void dispose() {
     // Limpiar portapapeles al salir de la destilación
     clearSystemClipboard();
+    _claude.dispose(); // ⚡ Bolt: Cleanup the HTTP client
     super.dispose();
   }
 
