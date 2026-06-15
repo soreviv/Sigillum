@@ -31,7 +31,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   bool   _isStreaming    = false;
   bool   _isGettingList  = false;
-  final ValueNotifier<String> _streamBufferNotifier = ValueNotifier<String>('');
+  // ⚡ Bolt: Usar ValueNotifier para evitar reconstruir toda la lista durante el streaming
+  final _streamBufferNotifier = ValueNotifier<String>('');
   String? _error;
 
   bool get _hasAiResponse =>
@@ -83,6 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
       )) {
         buffer.write(chunk);
         _streamBufferNotifier.value = buffer.toString();
+        // Ya no llamamos a setState({}) aquí para evitar re-renderizar todo el widget tree
         _scrollToBottom();
       }
       // Ensure the final state is rendered.
@@ -125,6 +127,7 @@ class _ChatScreenState extends State<ChatScreen> {
       )) {
         buffer.write(chunk);
         _streamBufferNotifier.value = buffer.toString();
+        // Ya no llamamos a setState({}) aquí para evitar re-renderizar todo el widget tree
         _scrollToBottom();
       }
       final response = buffer.toString();
@@ -233,7 +236,7 @@ class _ChatScreenState extends State<ChatScreen> {
         }
         return ValueListenableBuilder<String>(
           valueListenable: _streamBufferNotifier,
-          builder: (context, value, child) {
+          builder: (context, value, _) {
             return ChatBubble(
               message: value,
               isUser: false,
