@@ -82,6 +82,9 @@ class _ChatScreenState extends State<ChatScreen> {
         memory: _memory,
       )) {
         buffer.write(chunk);
+        // ⚡ Bolt: Optimización de rendimiento
+        // Actualizamos ValueNotifier en lugar de llamar a setState()
+        // para evitar la reconstrucción de todo el árbol de widgets de la pantalla.
         _streamBuffer.value = buffer.toString();
         _scrollToBottom();
       }
@@ -124,6 +127,8 @@ class _ChatScreenState extends State<ChatScreen> {
         memory: _memory,
       )) {
         buffer.write(chunk);
+        // ⚡ Bolt: Optimización de rendimiento
+        // Actualizamos ValueNotifier en lugar de llamar a setState()
         _streamBuffer.value = buffer.toString();
         _scrollToBottom();
       }
@@ -233,9 +238,9 @@ class _ChatScreenState extends State<ChatScreen> {
         }
         return ValueListenableBuilder<String>(
           valueListenable: _streamBuffer,
-          builder: (context, text, _) {
+          builder: (context, value, child) {
             return ChatBubble(
-              message: text,
+              message: value,
               isUser: false,
               isStreaming: true,
             );
