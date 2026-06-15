@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter test *)",
+      "Bash(flutter pub *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git pull *)",
+      "Bash(identify /home/soreviv/proyectos/Sigillum/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)",
+      "Bash(convert --version)",
+      "Bash(convert -background none -size 1024x1024 /home/soreviv/proyectos/Sigillum/assets/icon/sigillum_icon.svg /home/soreviv/proyectos/Sigillum/assets/icon/icon_1024.png)",
+      "Bash(git commit *)",
+      "Bash(convert -background none assets/icon/Chi_rho.svg assets/icon/chi_rho_preview.png)",
+      "Bash(identify assets/icon/chi_rho_preview.png)",
+      "Bash(flutter doctor *)",
+      "Bash(java -version)",
+      "Bash(git fetch *)",
+      "Bash(git reset *)",
+      "Bash(flutter analyze *)",
+      "Bash(flutter build *)",
+      "Bash(flutter --version)",
+      "Bash(keytool -printcert -jarfile /home/soreviv/proyectos/Sigillum/build/app/outputs/bundle/release/app-release.aab)",
+      "Bash(git restore *)"
+    ]
+  }
+}
