@@ -31,7 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   bool   _isStreaming    = false;
   bool   _isGettingList  = false;
-  final ValueNotifier<String> _streamBufferNotifier = ValueNotifier('');
+  final ValueNotifier<String> _streamBuffer = ValueNotifier<String>('');
   String? _error;
 
   bool get _hasAiResponse =>
@@ -44,7 +44,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _controller.dispose();
     _scrollCtrl.dispose();
     _focusNode.dispose();
-    _streamNotifier.dispose();
+    _streamBuffer.dispose();
     super.dispose();
   }
 
@@ -58,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
     await clearSystemClipboard();
     _error = null;
     _memory.addUser(text);
-    _streamBufferNotifier.value = '';
+    _streamBuffer.value = '';
     setState(() => _isStreaming = true);
     _scrollToBottom();
 
@@ -82,13 +82,8 @@ class _ChatScreenState extends State<ChatScreen> {
         memory: _memory,
       )) {
         buffer.write(chunk);
-        _streamBuffer = buffer.toString();
-
-        if (stopwatch.elapsedMilliseconds > 50) {
-          setState(() {});
-          _scrollToBottom();
-          stopwatch.reset();
-        }
+        _streamBuffer.value = buffer.toString();
+        _scrollToBottom();
       }
       // Ensure the final state is rendered.
       _streamBuffer = buffer.toString();
@@ -99,7 +94,7 @@ class _ChatScreenState extends State<ChatScreen> {
       _memory.addAssistant('');
       setState(() => _error = e.userMessage);
     } finally {
-      _streamBufferNotifier.value = '';
+      _streamBuffer.value = '';
       setState(() => _isStreaming = false);
       _scrollToBottom();
     }
@@ -108,7 +103,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _requestDistillation() async {
     _error = null;
     _memory.addUser('Dame mi lista de destilación estructurada.');
-    _streamBufferNotifier.value = '';
+    _streamBuffer.value = '';
     setState(() {
       _isGettingList = true;
       _isStreaming = true;
@@ -129,13 +124,8 @@ class _ChatScreenState extends State<ChatScreen> {
         memory: _memory,
       )) {
         buffer.write(chunk);
-        _streamBuffer = buffer.toString();
-
-        if (stopwatch.elapsedMilliseconds > 50) {
-          setState(() {});
-          _scrollToBottom();
-          stopwatch.reset();
-        }
+        _streamBuffer.value = buffer.toString();
+        _scrollToBottom();
       }
       final response = buffer.toString();
       // Ensure the final state is rendered.
@@ -166,7 +156,7 @@ class _ChatScreenState extends State<ChatScreen> {
       _memory.addAssistant('');
       setState(() => _error = e.userMessage);
     } finally {
-      _streamBufferNotifier.value = '';
+      _streamBuffer.value = '';
       setState(() {
         _isGettingList = false;
         _isStreaming = false;
@@ -178,7 +168,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _memory.purge();
     clearSystemClipboard();
     _controller.clear();
-    _streamBufferNotifier.value = '';
+    _streamBuffer.value = '';
     setState(() {
       _isStreaming   = false;
       _isGettingList = false;
@@ -242,10 +232,10 @@ class _ChatScreenState extends State<ChatScreen> {
           return ChatBubble(message: m.content, isUser: m.role == 'user');
         }
         return ValueListenableBuilder<String>(
-          valueListenable: _streamBufferNotifier,
-          builder: (context, currentBuffer, child) {
+          valueListenable: _streamBuffer,
+          builder: (context, text, _) {
             return ChatBubble(
-              message: currentBuffer,
+              message: text,
               isUser: false,
               isStreaming: true,
             );
