@@ -3,6 +3,8 @@
 library;
 import 'dart:collection';
 
+import 'dart:collection';
+
 /// Un mensaje individual en la conversación.
 final class ChatMessage {
   const ChatMessage({required this.role, required this.content});
@@ -20,6 +22,9 @@ final class ConversationMemory {
   /// Máximo de turnos conservados para no saturar el contexto de la API.
   static const int _maxTurns = 20;
 
+  // ⚡ Bolt: Usar UnmodifiableListView(O(1)) en lugar de List.unmodifiable(O(N))
+  // que recrea la lista entera. Esto ocurre en el getter 'messages' que se lee
+  // repetidamente en cada re-render y construcción del listado de chat.
   List<ChatMessage> get messages => UnmodifiableListView(_messages);
 
   bool get isEmpty => _messages.isEmpty;
