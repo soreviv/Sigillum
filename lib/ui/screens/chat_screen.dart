@@ -73,20 +73,23 @@ class _ChatScreenState extends State<ChatScreen> {
     final stopwatch = Stopwatch()..start();
 
     final buffer = StringBuffer();
-    // ⚡ Bolt: Throttling state updates during streaming prevents excessive
-    // Widget re-renders (especially MarkdownBody) and scroll-animation queueing.
-    final throttle = Stopwatch()..start();
+    final stopwatch = Stopwatch()..start();
     try {
       await for (final chunk in _claude.streamResponse(
         systemPrompt: prompt,
         memory: _memory,
       )) {
         buffer.write(chunk);
-        _streamNotifier.value = buffer.toString();
-        _scrollToBottom();
+        _streamBuffer = buffer.toString();
+        // ⚡ Bolt: Throttle UI updates to max ~20fps (50ms) to prevent
+        // Flutter engine jank from excessive re-renders during fast streams.
+        if (stopwatch.elapsedMilliseconds > 50) {
+          setState(() {});
+          _scrollToBottom();
+          stopwatch.reset();
+        }
       }
-      // Ensure the final state is rendered.
-      _streamBuffer = buffer.toString();
+      // Ensure the final chunk is rendered
       setState(() {});
       _scrollToBottom();
       _memory.addAssistant(buffer.toString());
@@ -116,17 +119,25 @@ class _ChatScreenState extends State<ChatScreen> {
     final stopwatch = Stopwatch()..start();
 
     final buffer = StringBuffer();
-    // ⚡ Bolt: Throttling state updates during streaming.
-    final throttle = Stopwatch()..start();
+    final stopwatch = Stopwatch()..start();
     try {
       await for (final chunk in _claude.streamResponse(
         systemPrompt: prompt,
         memory: _memory,
       )) {
         buffer.write(chunk);
-        _streamNotifier.value = buffer.toString();
-        _scrollToBottom();
+        _streamBuffer = buffer.toString();
+        // ⚡ Bolt: Throttle UI updates to max ~20fps (50ms) to prevent
+        // Flutter engine jank from excessive re-renders during fast streams.
+        if (stopwatch.elapsedMilliseconds > 50) {
+          setState(() {});
+          _scrollToBottom();
+          stopwatch.reset();
+        }
       }
+      // Ensure the final chunk is rendered
+      setState(() {});
+      _scrollToBottom();
       final response = buffer.toString();
       // Ensure the final state is rendered.
       _streamBuffer = response;
