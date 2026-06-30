@@ -23,11 +23,14 @@ class AiProviderException implements Exception {
 /// La API key se inyecta en tiempo de compilación con --dart-define.
 /// NUNCA se almacena ningún mensaje en disco.
 class MistralProvider {
-  MistralProvider({String? apiKey})
-    : _apiKey = apiKey ??
-          const String.fromEnvironment('MISTRAL_API_KEY', defaultValue: '').isNotEmpty
-              ? const String.fromEnvironment('MISTRAL_API_KEY', defaultValue: '')
-              : (dotenv.maybeGet('MISTRAL_API_KEY') ?? '');
+  MistralProvider({String? apiKey}) : _apiKey = _resolveKey(apiKey);
+
+  static String _resolveKey(String? override) {
+    if (override != null && override.isNotEmpty) return override;
+    const fromEnv = String.fromEnvironment('MISTRAL_API_KEY', defaultValue: '');
+    if (fromEnv.isNotEmpty) return fromEnv;
+    return dotenv.maybeGet('MISTRAL_API_KEY') ?? '';
+  }
 
   static const _endpoint = 'https://api.mistral.ai/v1/chat/completions';
   static const _model = 'mistral-medium-latest';
