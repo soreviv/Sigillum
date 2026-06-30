@@ -374,32 +374,148 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
-            Icon(Icons.edit_note, color: kTextMuted, size: 40),
-            SizedBox(height: 16),
-            Text(
-              'Narra tu situación con libertad.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: kTextPrimary,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+            _EmptyStateHeader(),
+            SizedBox(height: 36),
+            _EmptyStateStep(
+              number: '1',
+              title: 'Narra tu situación',
+              body: 'Escribe lo que pesa en tu conciencia. Puedes hacerlo '
+                  'con tus propias palabras, sin tecnicismos.',
             ),
-            SizedBox(height: 8),
-            Text(
-              'Cuando termines, pulsa "Obtener mi lista" para recibir '
-              'tu examen estructurado.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: kTextMuted, fontSize: 13, height: 1.5),
+            _EmptyStateDivider(),
+            _EmptyStateStep(
+              number: '2',
+              title: 'Dialoga con la guía',
+              body: 'La IA te hará preguntas para ayudarte a no olvidar '
+                  'ninguna falta relevante.',
+            ),
+            _EmptyStateDivider(),
+            _EmptyStateStep(
+              number: '3',
+              title: 'Obtén tu lista',
+              body: 'Pulsa "Obtener mi lista" cuando hayas terminado. '
+                  'Recibirás cada falta con su especie canónica y número.',
+            ),
+            _EmptyStateDivider(),
+            _EmptyStateStep(
+              number: '4',
+              title: 'Prepara tus preguntas',
+              body: 'Desde la lista puedes generar preguntas concretas '
+                  'para plantear a tu sacerdote en la confesión.',
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _EmptyStateHeader extends StatelessWidget {
+  const _EmptyStateHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: const [
+        Icon(Icons.edit_note, color: kGold, size: 32),
+        SizedBox(height: 12),
+        Text(
+          'Cómo preparar tu confesión',
+          style: TextStyle(
+            color: kTextPrimary,
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        SizedBox(height: 6),
+        Text(
+          'Sigue estos pasos para estructurar tu examen de conciencia.',
+          style: TextStyle(color: kTextMuted, fontSize: 13, height: 1.5),
+        ),
+      ],
+    );
+  }
+}
+
+class _EmptyStateStep extends StatelessWidget {
+  const _EmptyStateStep({
+    required this.number,
+    required this.title,
+    required this.body,
+  });
+
+  final String number;
+  final String title;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            border: Border.all(color: kGold, width: 1),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Center(
+            child: Text(
+              number,
+              style: const TextStyle(
+                color: kGold,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: kTextPrimary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                body,
+                style: const TextStyle(
+                  color: kTextMuted,
+                  fontSize: 13,
+                  height: 1.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EmptyStateDivider extends StatelessWidget {
+  const _EmptyStateDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 13, top: 6, bottom: 6),
+      child: Container(width: 1, height: 16, color: kBorder),
     );
   }
 }
