@@ -33,6 +33,7 @@ class _ChatScreenState extends State<ChatScreen> {
   bool   _isStreaming    = false;
   bool   _isGettingList  = false;
   String? _error;
+  String _streamBuffer = '';
 
   bool get _hasAiResponse =>
       _memory.messages.any((m) => m.role == 'assistant');
@@ -44,7 +45,6 @@ class _ChatScreenState extends State<ChatScreen> {
     _controller.dispose();
     _scrollCtrl.dispose();
     _focusNode.dispose();
-    _streamBufferNotifier.dispose();
     super.dispose();
   }
 
@@ -73,7 +73,6 @@ class _ChatScreenState extends State<ChatScreen> {
     final stopwatch = Stopwatch()..start();
 
     final buffer = StringBuffer();
-    final stopwatch = Stopwatch()..start();
     try {
       await for (final chunk in _claude.streamResponse(
         systemPrompt: prompt,
@@ -119,7 +118,6 @@ class _ChatScreenState extends State<ChatScreen> {
     final stopwatch = Stopwatch()..start();
 
     final buffer = StringBuffer();
-    final stopwatch = Stopwatch()..start();
     try {
       await for (final chunk in _claude.streamResponse(
         systemPrompt: prompt,
@@ -416,7 +414,7 @@ class _ApiKeyWarning extends StatelessWidget {
       color: kPanic.withValues(alpha: 30 / 255),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: const Text(
-        'API key no configurada. Compila con --dart-define=ANTHROPIC_API_KEY=...',
+        'API key no configurada. Compila con --dart-define=MISTRAL_API_KEY=...',
         style: TextStyle(color: kPanic, fontSize: 12),
       ),
     );

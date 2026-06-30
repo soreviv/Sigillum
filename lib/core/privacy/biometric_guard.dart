@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:local_auth/local_auth.dart';
 
 /// Observa el ciclo de vida de la app y exige re-autenticación biométrica
@@ -19,6 +20,12 @@ class _BiometricGuardState extends State<BiometricGuard>
     with WidgetsBindingObserver {
   final _auth = LocalAuthentication();
   bool _isLocked = true;
+  
+  // Biometría no está disponible en plataformas de escritorio
+  static bool get _isDesktop => 
+      !kIsWeb && (defaultTargetPlatform == TargetPlatform.linux ||
+                  defaultTargetPlatform == TargetPlatform.windows ||
+                  defaultTargetPlatform == TargetPlatform.macOS);
 
   @override
   void initState() {
@@ -35,6 +42,9 @@ class _BiometricGuardState extends State<BiometricGuard>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    // En desktop, no aplicar bloqueo por ciclo de vida
+    if (_isDesktop) return;
+    
     // Bloquear al perder foco; re-autenticar al recuperarlo.
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused ||
@@ -46,11 +56,24 @@ class _BiometricGuardState extends State<BiometricGuard>
   }
 
   Future<void> _authenticate() async {
-    final canCheck = await _auth.canCheckBiometrics ||
-        await _auth.isDeviceSupported();
+    // En plataformas de escritorio, deshabilitar bloqueo biométrico
+    if (_isDesktop) {
+      setState(() => _isLocked = false);
+      return;
+    }
+    
+    try {
+      final canCheckBiometrics = await _auth.canCheckBiometrics;
+      final isDeviceSupported = await _auth.isDeviceSupported();
+      final canCheck = canCheckBiometrics || isDeviceSupported;
 
-    if (!canCheck) {
-      // Dispositivo sin biometría: permite acceso sin bloqueo.
+      if (!canCheck) {
+        // Dispositivo sin biometría: permite acceso sin bloqueo.
+        setState(() => _isLocked = false);
+        return;
+      }
+    } catch (e) {
+      // Si falla la verificación de biometría, deshabilitar bloqueo
       setState(() => _isLocked = false);
       return;
     }

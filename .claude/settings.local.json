@@ -21,7 +21,11 @@
       "Bash(flutter build *)",
       "Bash(flutter --version)",
       "Bash(keytool -printcert -jarfile /home/soreviv/proyectos/Sigillum/build/app/outputs/bundle/release/app-release.aab)",
-      "Bash(git restore *)"
+      "Bash(git restore *)",
+      "Skill(run)",
+      "Bash(flutter devices *)",
+      "Bash(curl -s https://api.mistral.ai/v1/models -H 'Authorization: Bearer c7b98b9xlamEEvoJSGogImPLfXVFlyVU')",
+      "Bash(flutter run *)"
     ]
   }
 }

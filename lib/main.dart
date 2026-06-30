@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/privacy/biometric_guard.dart';
 import 'core/privacy/screenshot_guard.dart';
 import 'ui/screens/chat_screen.dart';
 import 'ui/screens/onboarding_screen.dart';
 import 'ui/theme/church_theme.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (_) {
+    // .env no disponible — la app usa --dart-define para las keys
+  }
   try {
     await ScreenshotGuard.enable();
   } catch (_) {
