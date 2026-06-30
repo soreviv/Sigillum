@@ -25,7 +25,8 @@
       "Skill(run)",
       "Bash(flutter devices *)",
       "Bash(curl -s https://api.mistral.ai/v1/models -H 'Authorization: Bearer c7b98b9xlamEEvoJSGogImPLfXVFlyVU')",
-      "Bash(flutter run *)"
+      "Bash(flutter run *)",
+      "Bash(flutter config *)"
     ]
   }
 }
