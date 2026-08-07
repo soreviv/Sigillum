@@ -27,7 +27,7 @@ void main() {
 
     test('contiene todas las reglas de seguridad del prompt', () {
       final prompt = buildSystemPrompt('');
-      expect(prompt, contains('VALIDACIÓN EMOCIONAL'));
+      expect(prompt, contains('EMPATÍA GENUINA'));
       expect(prompt, contains('TONO SOCRÁTICO'));
       expect(prompt, contains('PREGUNTAS ABIERTAS'));
       expect(prompt, contains('SIGILO TÉCNICO'));

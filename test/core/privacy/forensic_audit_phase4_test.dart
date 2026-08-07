@@ -207,10 +207,10 @@ void main() {
   // PUNTO 5: System Prompt — reglas de privacidad verificadas
   // ══════════════════════════════════════════════════════════════════════════
   group('[FASE4-05] System Prompt — reglas de privacidad', () {
-    test('el prompt exige validación emocional', () {
+    test('el prompt exige empatía genuina', () {
       final prompt = buildSystemPrompt('');
-      expect(prompt, contains('VALIDACIÓN EMOCIONAL'));
-      expect(prompt, contains('escuchas su corazón'));
+      expect(prompt, contains('EMPATÍA GENUINA'));
+      expect(prompt, contains('reconoce brevemente lo que el usuario expresa'));
     });
 
     test('el prompt distingue el rol sacramental', () {
