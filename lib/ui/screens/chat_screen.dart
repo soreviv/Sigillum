@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/ai/claude_provider.dart';
+import '../../core/ai/ai_provider.dart';
 import '../../core/ai/conversation_memory.dart';
 import '../../core/ai/distillation_parser.dart';
 import '../../core/ai/rag/rag_retriever.dart';
@@ -22,7 +22,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _memory = ConversationMemory();
-  final _claude = ClaudeProvider();
+  final _claude = AiProvider();
   final _rag    = RagRetriever();
 
   final _controller     = TextEditingController();
@@ -33,7 +33,6 @@ class _ChatScreenState extends State<ChatScreen> {
   bool   _isStreaming    = false;
   bool   _isGettingList  = false;
   String? _error;
-  String _streamBuffer = '';
 
   bool get _hasAiResponse =>
       _memory.messages.any((m) => m.role == 'assistant');
@@ -63,7 +62,8 @@ class _ChatScreenState extends State<ChatScreen> {
     _scrollToBottom();
 
     final ragContext = await _rag.retrieve(text);
-    final prompt = buildSystemPrompt(ragContext);
+    final parsed = parseContext(text, ragContext);
+    final prompt = buildSystemPrompt(ragContext, parsed['dynamicInstruction'] as String);
 
     // ⚡ Bolt: Throttled UI updates during stream parsing.
     // Rebuilding the widget tree and triggering scroll animations on every single
@@ -79,20 +79,19 @@ class _ChatScreenState extends State<ChatScreen> {
         memory: _memory,
       )) {
         buffer.write(chunk);
-        _streamBuffer = buffer.toString();
         // ⚡ Bolt: Throttle UI updates to max ~20fps (50ms) to prevent
         // Flutter engine jank from excessive re-renders during fast streams.
         if (stopwatch.elapsedMilliseconds > 50) {
-          setState(() {});
+          _streamNotifier.value = buffer.toString();
           _scrollToBottom();
           stopwatch.reset();
         }
       }
       // Ensure the final chunk is rendered
-      setState(() {});
+      _streamNotifier.value = buffer.toString();
       _scrollToBottom();
       _memory.addAssistant(buffer.toString());
-    } on ClaudeProviderException catch (e) {
+    } on AiProviderException catch (e) {
       _memory.addAssistant('');
       setState(() => _error = e.userMessage);
     } finally {
@@ -124,23 +123,18 @@ class _ChatScreenState extends State<ChatScreen> {
         memory: _memory,
       )) {
         buffer.write(chunk);
-        _streamBuffer = buffer.toString();
         // ⚡ Bolt: Throttle UI updates to max ~20fps (50ms) to prevent
         // Flutter engine jank from excessive re-renders during fast streams.
         if (stopwatch.elapsedMilliseconds > 50) {
-          setState(() {});
+          _streamNotifier.value = buffer.toString();
           _scrollToBottom();
           stopwatch.reset();
         }
       }
       // Ensure the final chunk is rendered
-      setState(() {});
+      _streamNotifier.value = buffer.toString();
       _scrollToBottom();
       final response = buffer.toString();
-      // Ensure the final state is rendered.
-      _streamBuffer = response;
-      setState(() {});
-      _scrollToBottom();
       _memory.addAssistant(response);
 
       final sins = parseDistillation(response);
@@ -161,7 +155,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ),
       );
-    } on ClaudeProviderException catch (e) {
+    } on AiProviderException catch (e) {
       _memory.addAssistant('');
       setState(() => _error = e.userMessage);
     } finally {
@@ -530,7 +524,8 @@ class _ApiKeyWarning extends StatelessWidget {
       color: kPanic.withValues(alpha: 30 / 255),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: const Text(
-        'API key no configurada. Compila con --dart-define=MISTRAL_API_KEY=...',
+        'API key no configurada. Compila con --dart-define=AI_API_KEY=... '
+        '(o ANTHROPIC_API_KEY para usar Claude nativo).',
         style: TextStyle(color: kPanic, fontSize: 12),
       ),
     );

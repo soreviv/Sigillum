@@ -36,8 +36,8 @@ Autor: Alejandro Viveros Domínguez
 - Bloqueo biométrico instantáneo al perder el foco de pantalla.
 
 ### IA Aséptica
-- Prohibido simular empatía humana (`"entiendo"`, `"lo siento"`).
-- No da absolución ni suplanta al sacerdote.
+- Empatía genuina, nunca fingida: conciliadora y amable para fomentar confianza, sin fórmulas de guion ni frases hechas que suenen impostadas.
+- No da absolución ni suplanta al sacerdote — jamás finge serlo ni pronuncia fórmulas de perdón.
 - Solo estructura, nunca aconseja directamente.
 - El motor RAG está acotado exclusivamente al Código de Derecho Canónico y el Catecismo de la Iglesia Católica.
 

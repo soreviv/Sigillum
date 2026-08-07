@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/ai/claude_provider.dart';
+import '../../core/ai/ai_provider.dart';
 import '../../core/ai/conversation_memory.dart';
 import '../../core/ai/distillation_parser.dart';
 import '../../core/ai/rag/rag_retriever.dart';
@@ -27,7 +27,7 @@ class DistillationScreen extends StatefulWidget {
 }
 
 class _DistillationScreenState extends State<DistillationScreen> {
-  final _claude = ClaudeProvider();
+  final _claude = AiProvider();
   final _rag    = RagRetriever();
 
   // Estado QPL por número de pecado
@@ -83,7 +83,7 @@ class _DistillationScreenState extends State<DistillationScreen> {
           _loadingQpls.remove(sin.number);
         });
       }
-    } on ClaudeProviderException catch (e) {
+    } on AiProviderException catch (e) {
       if (mounted) {
         setState(() {
           _qplTexts[sin.number] = e.userMessage;

@@ -3,8 +3,6 @@
 library;
 import 'dart:collection';
 
-import 'dart:collection';
-
 /// Un mensaje individual en la conversación.
 final class ChatMessage {
   const ChatMessage({required this.role, required this.content});
