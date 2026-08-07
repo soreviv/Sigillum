@@ -37,28 +37,42 @@ class SigillumKeyboardConfig {
     ValueChanged<String>? onSubmitted,
     FocusNode? focusNode,
   }) {
-    return TextField(
-      controller: controller,
-      focusNode: focusNode,
-      maxLines: maxLines,
-      keyboardType: TextInputType.multiline,
-      textInputAction:
-          maxLines == 1 ? TextInputAction.send : TextInputAction.newline,
+    // Intercepta Enter (sin Shift) en teclado físico para enviar, como en
+    // cualquier chat; Shift+Enter sigue insertando salto de línea.
+    return Focus(
+      onKeyEvent: (node, event) {
+        if (maxLines != 1 &&
+            event is KeyDownEvent &&
+            event.logicalKey == LogicalKeyboardKey.enter &&
+            !HardwareKeyboard.instance.isShiftPressed) {
+          onSubmitted?.call(controller.text);
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: TextField(
+        controller: controller,
+        focusNode: focusNode,
+        maxLines: maxLines,
+        keyboardType: TextInputType.multiline,
+        textInputAction:
+            maxLines == 1 ? TextInputAction.send : TextInputAction.newline,
 
-      // Bloqueos de privacidad de teclado
-      enableSuggestions: false,
-      autocorrect: false,
-      enableIMEPersonalizedLearning: false,
-      spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+        // Bloqueos de privacidad de teclado
+        enableSuggestions: false,
+        autocorrect: false,
+        enableIMEPersonalizedLearning: false,
+        spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
 
-      style: const TextStyle(color: Colors.white, fontSize: 16),
-      cursorColor: Colors.white54,
-      decoration: decoration(hintText: hintText),
-      onSubmitted: onSubmitted,
+        style: const TextStyle(color: Colors.white, fontSize: 16),
+        cursorColor: Colors.white54,
+        decoration: decoration(hintText: hintText),
+        onSubmitted: onSubmitted,
 
-      // Evita que el portapapeles del SO retenga el texto
-      contextMenuBuilder: (context, editableTextState) =>
-          const SizedBox.shrink(),
+        // Evita que el portapapeles del SO retenga el texto
+        contextMenuBuilder: (context, editableTextState) =>
+            const SizedBox.shrink(),
+      ),
     );
   }
 }
